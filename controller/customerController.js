@@ -64,6 +64,7 @@ const registerCustomer = async (req, res) => {
           name,
           email,
           password: bcrypt.hashSync(password),
+          balance: 0,
         });
         newUser.save();
         const token = signInToken(newUser);
@@ -72,6 +73,7 @@ const registerCustomer = async (req, res) => {
           _id: newUser._id,
           name: newUser.name,
           email: newUser.email,
+          balance: newUser.balance,
           message: "Email Verified, Please Login Now!",
         });
       }
@@ -111,6 +113,7 @@ const loginCustomer = async (req, res) => {
         address: customer.address,
         phone: customer.phone,
         image: customer.image,
+        balance: customer.balance,
       });
     } else {
       res.status(401).send({
@@ -293,7 +296,44 @@ const updateCustomer = async (req, res) => {
     });
   }
 };
+// const updateCustomerBalance = async (customerId, newBalance) => {
+//   try {
+//     const customer = await Customer.findByIdAndUpdate(
+//       customerId,
+//       { $set: { balance: newBalance } },
+//       { new: true }
+//     );
+//     if (!customer) {
+//       throw new Error("Customer not found");
+//     }
+//     return { message: "Balance updated successfully", customer };
+//   } catch (err) {
+//     console.error(err);
+//     throw new Error("Error updating balance");
+//   }
+// };
+const updateCustomerBalance = async (req, res) => {
+  try {
+    const customerId = req.params.id;
 
+    const newBalance = req.body.balance;
+
+    const customer = await Customer.findByIdAndUpdate(
+      customerId,
+      { $set: { balance: newBalance } },
+      { new: true }
+    );
+    if (!customer) {
+      throw new Error("Customer not found");
+    }
+    return res
+      .status(200)
+      .json({ message: "Balance updated successfully", customer });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Error updating balance" });
+  }
+};
 const deleteCustomer = (req, res) => {
   Customer.deleteOne({ _id: req.params.id }, (err) => {
     if (err) {
@@ -320,5 +360,6 @@ module.exports = {
   getAllCustomers,
   getCustomerById,
   updateCustomer,
+  updateCustomerBalance,
   deleteCustomer,
 };

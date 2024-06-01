@@ -37,6 +37,11 @@ const customerSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    balance: {
+      type: String,
+      required: false,
+      default: 0,
+    },
   },
   {
     timestamps: true,

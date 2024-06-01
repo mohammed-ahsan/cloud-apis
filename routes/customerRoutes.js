@@ -11,6 +11,7 @@ const {
   getAllCustomers,
   getCustomerById,
   updateCustomer,
+  updateCustomerBalance,
   deleteCustomer,
   addAllCustomers,
 } = require("../controller/customerController");
@@ -51,6 +52,9 @@ router.get("/:id", getCustomerById);
 
 //update a user
 router.put("/:id", updateCustomer);
+
+//update user balance
+router.patch("/balance/:id", updateCustomerBalance);
 
 //delete a user
 router.delete("/:id", deleteCustomer);
